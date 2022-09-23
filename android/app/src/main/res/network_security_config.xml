@@ -1,0 +1,3 @@
+<domain-config cleartextTrafficPermitted="true">
+  <domain includeSubdomains="true">https://tagteka-test.herokuapp.com</domain>
+</domain-config>

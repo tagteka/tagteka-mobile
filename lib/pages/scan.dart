@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:productivo/widget/NavBar.dart';
 import '../components/styles.dart';
 import 'package:flutter/material.dart';
+import '../models/asset_model.dart';
 import 'package:productivo/networking/requests.dart';
 
 class Scan extends StatefulWidget {
@@ -20,7 +21,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
   }
 
   @override
@@ -98,10 +99,10 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                 child: Text('Scans'.toUpperCase(),
                     style: TextStyle(fontFamily: 'medium')),
               ),
-              Tab(
-                child: Text('Locate Tag by #'.toUpperCase(),
-                    style: TextStyle(fontFamily: 'medium')),
-              ),
+              // Tab(
+              //   child: Text('Locate Tag by #'.toUpperCase(),
+              //       style: TextStyle(fontFamily: 'medium')),
+              // ),
               // Tab(
               //   child: Text('Tags'.toUpperCase(),
               //       style: TextStyle(fontFamily: 'medium')),
@@ -126,17 +127,19 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   Widget _buildNotes() {
     return SingleChildScrollView(
       child: Column(
-        children: _scans.map((e) => _buildNotesdtl(e)).toList(),
+        children: _scans.map((e) => _buildAssetdtl(e)).toList(),
       ),
     );
   }
 
-  Widget _buildNotesdtl(str) {
+  Widget _buildAssetdtl(str) {
     return FutureBuilder(
         future: Requests().getAsset(str),
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot<AssetModel?> snapshot) {
           if (snapshot.hasData) {
-            Container(
+            String name = snapshot.data!.name;
+            String id = snapshot.data!.id;
+            return Container(
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               decoration: BoxDecoration(
                 border: Border(
@@ -149,28 +152,38 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "$str",
+                        "$name",
                         style: TextStyle(fontFamily: 'semibold', fontSize: 18),
                       ),
-                      Text(
-                        "Today, 16.00",
-                        style: TextStyle(color: Colors.black38, fontSize: 10),
-                      ),
+                      // Text(
+                      //   "Today, 16.00",
+                      //   style: TextStyle(color: Colors.black38, fontSize: 10),
+                      // ),
                     ],
                   ),
                   SizedBox(height: 6),
                   Row(
                     children: [
-                      chips(str),
+                      chips(snapshot.data!.type),
                     ],
                   ),
-                  SizedBox(height: 6),
-                  Text(
-                    "Lorem ipsum dollor sit amet, adi plass cing elit. In libero nulla, msalaskued ameta, consedena",
-                    style: TextStyle(color: Colors.black38, fontSize: 14),
+                  Row(
+                    children: [
+                      SizedBox(height: 6),
+                      Text(
+                        "id: $id",
+                        style: TextStyle(color: Colors.black38, fontSize: 14),
+                      ),
+                    ],
                   ),
                 ],
               ),
+            );
+          } else {
+            return SizedBox(
+              width: 60,
+              height: 60,
+              child: CircularProgressIndicator(),
             );
           }
         });
@@ -189,7 +202,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       padding: EdgeInsets.only(right: 8),
       child: Chip(
         label: Text(
-          'Lorem'.toUpperCase(),
+          type.toUpperCase(),
           style: TextStyle(color: Colors.white, fontSize: 12),
         ),
         backgroundColor: c,
