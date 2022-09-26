@@ -36,6 +36,13 @@ class ScanDetail extends StatelessWidget {
         elevation: 0,
         title: Text('Asset Details'),
         actions: [
+          // Checkbox(
+          //     checkColor: appColor,
+          //     fillColor: MaterialStateProperty.all(Colors.white),
+          //     value: filter,
+          //     onChanged: (bool? value) {
+          //       setState(() => isChecked = value!);
+          //     }),
           TextButton(
             onPressed: () {},
             style: ButtonStyle(
@@ -54,23 +61,6 @@ class ScanDetail extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          CarouselSlider(
-            options: CarouselOptions(height: 300.0),
-            items: [
-              'https://tagteka-assets.s3.us-east-2.amazonaws.com/20220926_122812.jpg',
-              'https://tagteka-assets.s3.us-east-2.amazonaws.com/extinguisher.jpeg',
-            ].map((i) {
-              return Builder(builder: (BuildContext context) {
-                return Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: Image.network('$i'));
-              });
-            }).toList(),
-          ),
           Container(
               color: Colors.white,
               child: Stack(
@@ -79,31 +69,79 @@ class ScanDetail extends StatelessWidget {
                       future: Requests().getAsset(string),
                       builder: (context, AsyncSnapshot<AssetModel?> snapshot) {
                         List<String> currentDetails = [];
+                        List<String> urls = [];
+                        List<String> comments = [];
                         if (snapshot.hasData) {
-                          currentDetails.add(snapshot.data!.name);
-                          currentDetails.add(snapshot.data!.tagtekaId);
-                          currentDetails.add(snapshot.data!.id);
-                          currentDetails.add(snapshot.data!.date);
-                          currentDetails.add(snapshot.data!.lastService);
-                          return Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 16, horizontal: 16),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                    width: 1.0, color: Colors.black12),
+                          currentDetails.add("Name: " + snapshot.data!.name);
+                          currentDetails
+                              .add("TTid: " + snapshot.data!.tagtekaId);
+                          currentDetails.add("Type: " + snapshot.data!.type);
+                          currentDetails.add("Last service: " +
+                              snapshot.data!.lastService.toString());
+                          currentDetails.add("id: " + snapshot.data!.id);
+                          currentDetails
+                              .add('Date: ' + snapshot.data!.date.toString());
+                          comments.addAll(snapshot.data!.comments);
+                          urls.addAll(snapshot.data!.images);
+
+                          return Column(
+                            children: [
+                              CarouselSlider(
+                                options: CarouselOptions(height: 300.0),
+                                items: urls.map((i) {
+                                  return Builder(
+                                      builder: (BuildContext context) {
+                                    return Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 5.0),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        child: Image.network('$i'));
+                                  });
+                                }).toList(),
                               ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: currentDetails
-                                  .map(
-                                    (e) => InkWell(
-                                      child: _buildAssetdtl(e),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
+                              SizedBox(height: 30),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(
+                                        width: 1.0, color: Colors.black12),
+                                    left: BorderSide(
+                                        width: 1.0, color: Colors.black12),
+                                    right: BorderSide(
+                                        width: 1.0, color: Colors.black12),
+                                    bottom: BorderSide(
+                                        width: 1.0, color: Colors.black12),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: merge(
+                                      currentDetails
+                                          .map((e) => (_buildAssetdtl(e)))
+                                          .toList(),
+                                      (comments
+                                          .map((e) => Text("$e"))
+                                          .toList())),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => {},
+                                child: Text('Request Service'),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  foregroundColor:
+                                      MaterialStateProperty.all(appColor),
+                                ),
+                              ),
+                            ],
                           );
                         } else if (snapshot.hasError) {
                           return Container(
@@ -127,6 +165,13 @@ class ScanDetail extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Widget> merge(List<Widget> list1, List<Widget> other) {
+    List<Widget> w = [];
+    w.addAll(list1);
+    w.addAll(other);
+    return w;
   }
 
   Widget _buildHeader() {
@@ -169,8 +214,6 @@ class ScanDetail extends StatelessWidget {
   }
 
   Widget _buildAssetdtl(String detail) {
-    return Container(
-      child: Text('$detail'),
-    );
+    return Text('$detail');
   }
 }

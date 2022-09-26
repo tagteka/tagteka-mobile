@@ -168,9 +168,8 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
         builder: (context, AsyncSnapshot<AssetModel?> snapshot) {
           if (snapshot.hasData) {
             String name = snapshot.data!.name;
-            String id = snapshot.data!.id;
             String tagtekaId = snapshot.data!.tagtekaId;
-            String lastService = snapshot.data!.lastService;
+            String lastService = snapshot.data!.lastService.toString();
             return Container(
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               decoration: BoxDecoration(
@@ -196,7 +195,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                   SizedBox(height: 6),
                   Row(
                     children: [
-                      chips(snapshot.data!.type),
+                      chips(snapshot.data!.category),
                     ],
                   ),
                   Row(
@@ -294,6 +293,12 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
     switch (type) {
       case 'fire safety':
         c = Color.fromARGB(255, 240, 65, 65);
+        break;
+      case 'plumbing':
+        c = Color.fromARGB(255, 10, 135, 205);
+        break;
+      case 'electrical':
+        c = Color.fromARGB(255, 245, 230, 20);
         break;
       default:
         c = Colors.white;
