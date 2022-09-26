@@ -60,14 +60,23 @@ class ScanDetail extends StatelessWidget {
                   FutureBuilder(
                       future: Requests().getAsset(string),
                       builder: (context, AsyncSnapshot<AssetModel?> snapshot) {
+                        List<String> currentDetails = [];
                         if (snapshot.hasData) {
-                          List<String> currentDetails = [];
                           currentDetails.add(snapshot.data!.name);
                           currentDetails.add(snapshot.data!.tagtekaId);
                           currentDetails.add(snapshot.data!.id);
                           currentDetails.add(snapshot.data!.date);
                           currentDetails.add(snapshot.data!.lastService);
-                          return Column(
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 16),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                    width: 1.0, color: Colors.black12),
+                              ),
+                            ),
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: currentDetails
                                   .map(
@@ -75,7 +84,9 @@ class ScanDetail extends StatelessWidget {
                                       child: _buildAssetdtl(e),
                                     ),
                                   )
-                                  .toList());
+                                  .toList(),
+                            ),
+                          );
                         } else if (snapshot.hasError) {
                           return Container(
                               padding: EdgeInsets.symmetric(
