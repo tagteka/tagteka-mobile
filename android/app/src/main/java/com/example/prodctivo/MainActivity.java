@@ -109,6 +109,18 @@ public class MainActivity extends FlutterActivity {
         mContext = this.getContext();
         mReader = Reader.getReader(mContext, mInventoryHandler);
         mReader.RF_PerformInventory(true, false, false);
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    this.sleep(5000);
+                    mReader.RF_StopInventory();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        t.start();
         // int ret = mReader.RF_PerformInventory(true, false, false);
 //        mReader.RF_StopInventory();
         return 0;

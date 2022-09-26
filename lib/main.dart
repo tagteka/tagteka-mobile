@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Productivo',
+      title: 'Tagteka',
       theme: ThemeData(
         fontFamily: "regular",
         iconTheme: const IconThemeData(color: Colors.black87),

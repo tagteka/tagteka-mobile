@@ -5,6 +5,7 @@ import '../components/styles.dart';
 import 'package:flutter/material.dart';
 import '../models/asset_model.dart';
 import 'package:productivo/networking/requests.dart';
+import '../pages/scan_detail.dart';
 
 class Scan extends StatefulWidget {
   static const String id = 'Scan';
@@ -16,6 +17,8 @@ class Scan extends StatefulWidget {
 }
 
 class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
+  bool isConnected = false;
+  String buttonText = "Connect";
   TabController? _tabController;
 
   @override
@@ -47,20 +50,34 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
           ),
         ),
         actions: [
-          Container(
-            padding: EdgeInsets.all(16),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: IconButton(
-                onPressed: _connectSled,
-                icon: Icon(
-                  Icons.check_box,
-                  color: appColor,
-                  size: 20,
-                ),
-              ),
-            ),
-          ),
+          SizedBox(
+              // padding: EdgeInsets.all(16),
+              // child: CircleAvatar(
+              //   backgroundColor: Colors.white,
+              //   child: IconButton(
+              //     onPressed: _toggleConnection,
+              //     icon: Icon(
+              //       Icons.,
+              //       color: appColor,
+              //       size: 20,
+              //     ),
+              //   ),
+              // ),
+              width: 100,
+              height: 20,
+              child: TextButton(
+                child: Text(buttonText),
+                onPressed: _toggleConnection,
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(color: appColor),
+                    )),
+                    backgroundColor: MaterialStateProperty.all<Color>(appColor),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white)),
+              )),
           Container(
             padding: EdgeInsets.all(16),
             child: CircleAvatar(
@@ -127,18 +144,33 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   Widget _buildNotes() {
     return SingleChildScrollView(
       child: Column(
-        children: _scans.map((e) => _buildAssetdtl(e)).toList(),
+        children: _scans
+            .map((e) => InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ScanDetail(string: e),
+                    ),
+                  );
+                },
+                child: _buildAssetdtl(e)))
+            .toList(),
       ),
     );
   }
 
   Widget _buildAssetdtl(str) {
+    int rnh = DateTime.now().hour;
+    int rnm = DateTime.now().minute;
     return FutureBuilder(
         future: Requests().getAsset(str),
         builder: (context, AsyncSnapshot<AssetModel?> snapshot) {
           if (snapshot.hasData) {
             String name = snapshot.data!.name;
             String id = snapshot.data!.id;
+            String tagtekaId = snapshot.data!.tagtekaId;
+            String lastService = snapshot.data!.lastService;
             return Container(
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               decoration: BoxDecoration(
@@ -152,13 +184,13 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "$name",
+                        "$tagtekaId",
                         style: TextStyle(fontFamily: 'semibold', fontSize: 18),
                       ),
-                      // Text(
-                      //   "Today, 16.00",
-                      //   style: TextStyle(color: Colors.black38, fontSize: 10),
-                      // ),
+                      Text(
+                        "Today, $rnh:$rnm",
+                        style: TextStyle(color: Colors.black38, fontSize: 10),
+                      ),
                     ],
                   ),
                   SizedBox(height: 6),
@@ -170,14 +202,82 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                   Row(
                     children: [
                       SizedBox(height: 6),
-                      Text(
-                        "id: $id",
-                        style: TextStyle(color: Colors.black38, fontSize: 14),
-                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Item: ",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                "$name",
+                                style: TextStyle(
+                                  color: Colors.black38,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "Last Service: ",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                "$lastService",
+                                style: TextStyle(
+                                  color: Colors.black38,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ],
               ),
+            );
+          } else if (snapshot.hasError) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1.0, color: Colors.black12),
+                ),
+              ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Not in database",
+                          style:
+                              TextStyle(fontFamily: 'semibold', fontSize: 18),
+                        ),
+                        Text(
+                          "Today, $rnh:$rnm",
+                          style: TextStyle(color: Colors.black38, fontSize: 10),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "id: $str",
+                    ),
+                  ]),
             );
           } else {
             return SizedBox(
@@ -192,7 +292,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   chips(type) {
     Color c;
     switch (type) {
-      case 'fire':
+      case 'fire safety':
         c = Color.fromARGB(255, 240, 65, 65);
         break;
       default:
@@ -321,6 +421,22 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   String _connected = 'Sled connection status unknown.';
   List<String> _scans = [];
 
+  Future _toggleConnection() async {
+    String _buttonText = "";
+    if (isConnected) {
+      isConnected = false;
+      _disconnectSled();
+      _buttonText = "Connect";
+    } else {
+      isConnected = true;
+      _connectSled();
+      _buttonText = "Disconnect";
+    }
+    setState(() {
+      buttonText = _buttonText;
+    });
+  }
+
   Future _connectSled() async {
     String connected;
     try {
@@ -345,7 +461,9 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       connected = e.toString();
       print(e);
     }
-    setState(() => _connected = connected);
+    setState(() {
+      _connected = connected;
+    });
   }
 
   Future _scan() async {
