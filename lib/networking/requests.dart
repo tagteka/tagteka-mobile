@@ -3,7 +3,6 @@ library requests;
 import 'package:http/http.dart' as http;
 import 'dart:developer';
 import 'package:productivo/models/asset_model.dart';
-import 'package:productivo/networking/requests.dart';
 
 class Requests {
   Future<AssetModel?> getAsset(id) async {

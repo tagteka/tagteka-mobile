@@ -11,8 +11,6 @@ import '../components/styles.dart';
 import 'package:productivo/networking/requests.dart';
 import 'package:productivo/models/asset_model.dart';
 
-List<String> currentDetails = [];
-
 class ScanDetail extends StatelessWidget {
   static const String id = 'ScanDetail';
   final String string;
@@ -29,9 +27,6 @@ class ScanDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _getDetails(string);
-    _getDetails(string);
-    print(currentDetails);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -55,7 +50,6 @@ class ScanDetail extends StatelessWidget {
   }
 
   Widget _buildBody() {
-    _getDetails(string);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -63,36 +57,47 @@ class ScanDetail extends StatelessWidget {
               color: Colors.white,
               child: Stack(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: currentDetails
-                        .map(
-                          (e) => InkWell(
-                            child: _buildAssetdtl(e),
-                          ),
-                        )
-                        .toList(),
-                  ),
+                  FutureBuilder(
+                      future: Requests().getAsset(string),
+                      builder: (context, AsyncSnapshot<AssetModel?> snapshot) {
+                        if (snapshot.hasData) {
+                          List<String> currentDetails = [];
+                          currentDetails.add(snapshot.data!.name);
+                          currentDetails.add(snapshot.data!.tagtekaId);
+                          currentDetails.add(snapshot.data!.id);
+                          currentDetails.add(snapshot.data!.date);
+                          currentDetails.add(snapshot.data!.lastService);
+                          return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: currentDetails
+                                  .map(
+                                    (e) => InkWell(
+                                      child: _buildAssetdtl(e),
+                                    ),
+                                  )
+                                  .toList());
+                        } else if (snapshot.hasError) {
+                          return Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 16),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                bottom: BorderSide(
+                                    width: 1.0, color: Colors.black12),
+                              )));
+                        } else {
+                          return SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
                 ],
               )),
         ],
       ),
     );
-  }
-
-  void _getDetails(string) async {
-    AssetModel? response;
-    response = await Requests().getAsset(string);
-    List<String> details = [];
-    details.add(response!.tagtekaId);
-    details.add(response.name);
-    details.add(response.id);
-    details.add(response.lastService);
-    details.add(response.date);
-    details.add(response.type);
-
-    currentDetails.clear();
-    currentDetails.addAll(details);
   }
 
   Widget _buildHeader() {
