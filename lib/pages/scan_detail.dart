@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import '../components/styles.dart';
 import 'package:productivo/networking/requests.dart';
 import 'package:productivo/models/asset_model.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class ScanDetail extends StatelessWidget {
   static const String id = 'ScanDetail';
@@ -53,6 +54,23 @@ class ScanDetail extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
+          CarouselSlider(
+            options: CarouselOptions(height: 300.0),
+            items: [
+              'https://tagteka-assets.s3.us-east-2.amazonaws.com/20220926_122812.jpg',
+              'https://tagteka-assets.s3.us-east-2.amazonaws.com/extinguisher.jpeg',
+            ].map((i) {
+              return Builder(builder: (BuildContext context) {
+                return Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: Image.network('$i'));
+              });
+            }).toList(),
+          ),
           Container(
               color: Colors.white,
               child: Stack(
