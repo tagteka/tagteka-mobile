@@ -12,22 +12,29 @@ import 'package:productivo/networking/requests.dart';
 import 'package:productivo/models/asset_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class ScanDetail extends StatelessWidget {
+class ScanDetail extends StatefulWidget {
   static const String id = 'ScanDetail';
   final String string;
 
   const ScanDetail({Key? key, required this.string}) : super(key: key);
-  // @override
-  // _ScanDetailState createState() => _ScanDetailState();
+  @override
+  _ScanDetailState createState() => _ScanDetailState(string);
+}
 
-// class _ScanDetailState extends State<ScanDetail> {
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
+class _ScanDetailState extends State<ScanDetail> {
+  String str = "";
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _ScanDetailState(string) {
+    this.str = string;
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool _isChecked = false;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -36,13 +43,6 @@ class ScanDetail extends StatelessWidget {
         elevation: 0,
         title: Text('Asset Details'),
         actions: [
-          // Checkbox(
-          //     checkColor: appColor,
-          //     fillColor: MaterialStateProperty.all(Colors.white),
-          //     value: filter,
-          //     onChanged: (bool? value) {
-          //       setState(() => isChecked = value!);
-          //     }),
           TextButton(
             onPressed: () {},
             style: ButtonStyle(
@@ -66,7 +66,7 @@ class ScanDetail extends StatelessWidget {
               child: Stack(
                 children: [
                   FutureBuilder(
-                      future: Requests().getAsset(string),
+                      future: Requests().getAsset(str),
                       builder: (context, AsyncSnapshot<AssetModel?> snapshot) {
                         List<String> currentDetails = [];
                         List<String> urls = [];
