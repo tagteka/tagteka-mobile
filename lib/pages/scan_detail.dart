@@ -11,6 +11,7 @@ import '../components/styles.dart';
 import 'package:productivo/networking/requests.dart';
 import 'package:productivo/models/asset_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:productivo/pages/edit_asset.dart';
 
 class ScanDetail extends StatefulWidget {
   static const String id = 'ScanDetail';
@@ -34,7 +35,6 @@ class _ScanDetailState extends State<ScanDetail> {
 
   @override
   Widget build(BuildContext context) {
-    bool _isChecked = false;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -44,7 +44,17 @@ class _ScanDetailState extends State<ScanDetail> {
         title: Text('Asset Details'),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditAsset(
+                    str: str,
+                    newItem: false,
+                  ),
+                ),
+              );
+            },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(appColor),
             ),
@@ -122,7 +132,7 @@ class _ScanDetailState extends State<ScanDetail> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: merge(
+                                  children: _merge(
                                       currentDetails
                                           .map((e) => (_buildAssetdtl(e)))
                                           .toList(),
@@ -167,7 +177,7 @@ class _ScanDetailState extends State<ScanDetail> {
     );
   }
 
-  List<Widget> merge(List<Widget> list1, List<Widget> other) {
+  List<Widget> _merge(List<Widget> list1, List<Widget> other) {
     List<Widget> w = [];
     w.addAll(list1);
     w.addAll(other);

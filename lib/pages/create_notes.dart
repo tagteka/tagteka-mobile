@@ -43,7 +43,7 @@ class _CreateNotesState extends State<CreateNotes> {
             ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                primary: appColor,
+                backgroundColor: appColor,
               ),
               child: Text("Save".toUpperCase()),
             ),

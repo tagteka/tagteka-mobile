@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:productivo/pages/edit_asset.dart';
 import 'package:productivo/widget/NavBar.dart';
 import '../components/styles.dart';
 import 'package:flutter/material.dart';
 import '../models/asset_model.dart';
 import 'package:productivo/networking/requests.dart';
+import 'package:productivo/pages/edit_asset.dart';
 import '../pages/scan_detail.dart';
 
 class Scan extends StatefulWidget {
@@ -295,7 +297,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ScanDetail(string: str),
+                      builder: (context) => EditAsset(str: str, newItem: true),
                     ),
                   );
                 },
