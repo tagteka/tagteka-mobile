@@ -20,6 +20,7 @@ dependencies:
   html_editor_enhanced: ^2.4.0+1
   change_app_package_name: ^1.0.0
   http: ^0.13.5
+  carousel_slider: ^4.1.1
   
   
 

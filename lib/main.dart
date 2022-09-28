@@ -32,6 +32,7 @@ import 'package:productivo/pages/task_category.dart';
 import 'package:productivo/pages/upload_file.dart';
 import 'package:productivo/pages/welcome.dart';
 import 'package:productivo/pages/scan.dart';
+import 'package:productivo/pages/add_asset.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Productivo',
+      title: 'Tagteka',
       theme: ThemeData(
         fontFamily: "regular",
         iconTheme: const IconThemeData(color: Colors.black87),
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
         FileScreen.id: (context) => const FileScreen(),
         UploadFile.id: (context) => const UploadFile(),
         Scan.id: (context) => const UploadFile(),
+        AddAsset.id: (context) => const AddAsset(),
       },
     );
   }

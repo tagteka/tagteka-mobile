@@ -10,9 +10,9 @@ class Requests {
         'https://tagteka-test.herokuapp.com/api/findAsset?id=' + id.toString());
     var response = await http.get(url);
     if (response.statusCode == 200) {
+      if (response.body == null) throw NullThrownError();
       AssetModel _model = assetModelFromJson(response.body);
       return _model;
     }
-    return AssetModel(date: '1', id: '2', name: '3', type: '4');
   }
 }
