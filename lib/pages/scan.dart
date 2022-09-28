@@ -184,18 +184,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   Widget _buildAssets() {
     return SingleChildScrollView(
       child: Column(
-        children: _scans
-            .map((e) => InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ScanDetail(string: e),
-                    ),
-                  );
-                },
-                child: _buildAssetdtl(e)))
-            .toList(),
+        children: _scans.map((e) => _buildAssetdtl(e)).toList(),
       ),
     );
   }
@@ -210,87 +199,16 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
             String name = snapshot.data!.name;
             String tagtekaId = snapshot.data!.tagtekaId;
             String lastService = snapshot.data!.lastService.toString();
-            return Container(
-              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1.0, color: Colors.black12),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "$tagtekaId",
-                        style: TextStyle(fontFamily: 'semibold', fontSize: 18),
-                      ),
-                      Text(
-                        "Today, $rnh:$rnm",
-                        style: TextStyle(color: Colors.black38, fontSize: 10),
-                      ),
-                    ],
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ScanDetail(string: str),
                   ),
-                  SizedBox(height: 6),
-                  Row(
-                    children: [
-                      chips(snapshot.data!.category),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(height: 6),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Item: ",
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                "$name",
-                                style: TextStyle(
-                                  color: Colors.black38,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "Last Service: ",
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                "$lastService",
-                                style: TextStyle(
-                                  color: Colors.black38,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            );
-          } else if (snapshot.hasError) {
-            if (!_isChecked) {
-              return Container(
+                );
+              },
+              child: Container(
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 decoration: BoxDecoration(
                   border: Border(
@@ -298,27 +216,119 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                   ),
                 ),
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Not in database",
-                            style:
-                                TextStyle(fontFamily: 'semibold', fontSize: 18),
-                          ),
-                          Text(
-                            "Today, $rnh:$rnm",
-                            style:
-                                TextStyle(color: Colors.black38, fontSize: 10),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "id: $str",
-                      ),
-                    ]),
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "$tagtekaId",
+                          style:
+                              TextStyle(fontFamily: 'semibold', fontSize: 18),
+                        ),
+                        Text(
+                          "Today, $rnh:$rnm",
+                          style: TextStyle(color: Colors.black38, fontSize: 10),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      children: [
+                        chips(snapshot.data!.category),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(height: 6),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Item: ",
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  "$name",
+                                  style: TextStyle(
+                                    color: Colors.black38,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "Last Service: ",
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  "$lastService",
+                                  style: TextStyle(
+                                    color: Colors.black38,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            if (!_isChecked) {
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ScanDetail(string: str),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(width: 1.0, color: Colors.black12),
+                    ),
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Not in database",
+                              style: TextStyle(
+                                  fontFamily: 'semibold', fontSize: 18),
+                            ),
+                            Text(
+                              "Today, $rnh:$rnm",
+                              style: TextStyle(
+                                  color: Colors.black38, fontSize: 10),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          "id: $str",
+                        ),
+                      ]),
+                ),
               );
             } else {
               return SizedBox.shrink();
