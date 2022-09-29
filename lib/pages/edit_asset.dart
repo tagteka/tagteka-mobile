@@ -29,8 +29,9 @@ class _EditAssetState extends State<EditAsset> {
   AssetModel? am;
   bool newItem = false;
   String title = 'Edit an existing item.';
-
+  List<DropdownMenuItem<String>> _types = [];
   _EditAssetState(String string, AssetModel? am, bool newItem) {
+    str = string;
     this.am = newItem
         ? new AssetModel(
             id: str,
@@ -43,8 +44,6 @@ class _EditAssetState extends State<EditAsset> {
             tagtekaId: '',
             type: '')
         : am;
-    print(this.am!.id);
-    str = string;
     this.newItem = newItem;
     title = newItem ? 'Add a New Asset' : 'Edit Asset';
   }
@@ -105,6 +104,87 @@ class _EditAssetState extends State<EditAsset> {
     Isolate.exit(p.sendPort, await Requests().updateAssetWrapper(am));
   }
 
+  List<DropdownMenuItem<String>> correspondingTypes(String category) {
+    List<DropdownMenuItem<String>> ret = [];
+    switch (category) {
+      case 'plumbing':
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Valves'),
+            value: 'valve',
+          ),
+        );
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Pumps'),
+            value: 'pump',
+          ),
+        );
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Backflow'),
+            value: 'backflow',
+          ),
+        );
+        break;
+      case 'fireSafety':
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Alarms'),
+            value: 'alarm',
+          ),
+        );
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Circuit Breakers'),
+            value: 'circuitBreaker',
+          ),
+        );
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Sprinklers'),
+            value: 'sprinkler',
+          ),
+        );
+        break;
+      case 'electrical':
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Motors'),
+            value: 'motors',
+          ),
+        );
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Batteries'),
+            value: 'batteries',
+          ),
+        );
+        break;
+      // case 'electrical':
+      //   ret.add(
+      //     DropdownMenuItem(
+      //       child: Text('Circuit Breakers'),
+      //       value: 'circuitBreaker',
+      //     ),
+      //   );
+      //   ret.add(
+      //     DropdownMenuItem(
+      //       child: Text('Motors'),
+      //       value: 'motors',
+      //     ),
+      //   );
+      //   ret.add(
+      //     DropdownMenuItem(
+      //       child: Text('Batteries'),
+      //       value: 'batteries',
+      //     ),
+      //   );
+      //   break;
+    }
+    return ret;
+  }
+
   Widget _buildForm() {
     return Form(
       key: _formKey,
@@ -120,6 +200,7 @@ class _EditAssetState extends State<EditAsset> {
               readOnly: true,
               enabled: false,
               initialValue: am!.id,
+              style: TextStyle(color: Colors.grey),
             ),
             TextFormField(
                 decoration: const InputDecoration(labelText: 'Asset Name'),
@@ -132,8 +213,75 @@ class _EditAssetState extends State<EditAsset> {
                   }
                   return null;
                 }),
+            DropdownButtonFormField(
+              items: [
+                DropdownMenuItem(
+                  child: Text('Plumbing'),
+                  value: 'plumbing',
+                ),
+                DropdownMenuItem(
+                  child: Text('Fire Safety'),
+                  value: 'fireSafety',
+                ),
+                DropdownMenuItem(
+                  child: Text('HVAC'),
+                  value: 'hvac',
+                ),
+                DropdownMenuItem(
+                  child: Text('Electrical'),
+                  value: 'electrical',
+                ),
+                DropdownMenuItem(
+                  child: Text('Equipment'),
+                  value: 'equipment',
+                ),
+              ],
+              onChanged: (newValue) {
+                am!.category = newValue.toString();
+                setState(
+                  () {
+                    _types = correspondingTypes(newValue.toString());
+                  },
+                );
+              },
+              decoration: const InputDecoration(labelText: 'Category'),
+              onSaved: (newValue) => am!.category = newValue.toString(),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Select a category';
+                }
+                return null;
+              },
+            ),
+            DropdownButtonFormField(
+              items: _types,
+              onChanged: (newValue) => am!.type = newValue.toString(),
+              decoration: const InputDecoration(labelText: 'Type'),
+              onSaved: (newValue) => am!.type = newValue.toString(),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Select a type';
+                }
+                return null;
+              },
+            ),
+            // TextFormField(
+            //     decoration: const InputDecoration(
+            //         labelText: 'Last Service (YYYY-MM-DD)'),
+            //     onSaved: (newValue) =>
+            //         am!.name = newValue == null ? am!.name : newValue,
+            //     initialValue: newItem ? '' : am!.name,
+            //     validator: (String? value) {
+            //       if (value == null || value.isEmpty) {
+            //         return 'Please enter an asset name';
+            //       } else {
+            //         var pattern1 = "/^[0-9][0-9][0-9][0-9]-(1[0-2])-[0-3][0-9]$|^[0-9][0-9][0-9][0-9]-0[1-9]-[0-3][0-9]$/";
+            //         RegExp exp = RegExp(pattern);
+            //       }
+            //       return null;
+            //     }),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
               child: ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -146,7 +294,6 @@ class _EditAssetState extends State<EditAsset> {
                       // Requests().updateAsset(am);
                     } else
                       Requests().insertAsset(am);
-                    setState(() {});
                   }
                 },
                 child: const Text('Submit'),

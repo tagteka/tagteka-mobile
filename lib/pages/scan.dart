@@ -25,11 +25,13 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   String connectionStatus = "Disconnected";
   TabController? _tabController;
   bool _isChecked = false;
+  FToast fToast = FToast();
 
   @override
   void initState() {
     _tabController = TabController(length: 1, vsync: this);
-    _disconnectSled();
+    fToast.init(context);
+    // _disconnectSled();
     super.initState();
   }
 
@@ -37,7 +39,6 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   void dispose() {
     super.dispose();
     _tabController!.dispose();
-    _disconnectSled();
   }
 
   @override
@@ -294,6 +295,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
             );
           } else if (snapshot.hasError) {
             if (!_isChecked) {
+              print(str);
               return InkWell(
                 onTap: () {
                   Navigator.push(
@@ -376,108 +378,6 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //       backgroundColor: Colors.white,
-  //       drawer: NavBar(),
-  //       appBar: AppBar(
-  //         backgroundColor: appColor,
-  //         iconTheme: const IconThemeData(color: Colors.white),
-  //         elevation: 0,
-  //         toolbarHeight: 60,
-  //         title: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text(
-  //               "Scan for Nearby Tags",
-  //               style: TextStyle(
-  //                 color: Colors.white,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       body: Container(
-  //           decoration: const BoxDecoration(
-  //             color: Colors.white,
-  //           ),
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             crossAxisAlignment: CrossAxisAlignment.end,
-  //             children: [
-  //               Row(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.end,
-  //                   children: [
-  //                     OutlinedButton(
-  //                       style: ButtonStyle(
-  //                           fixedSize: MaterialStateProperty.all(
-  //                               Size.fromWidth(150.0)),
-  //                           shape: MaterialStateProperty.all(
-  //                               RoundedRectangleBorder(
-  //                             borderRadius: BorderRadius.circular(7.0),
-  //                           ))),
-  //                       onPressed: () => {_connectSled()},
-  //                       child: const Text('Connect'),
-  //                     ),
-  //                     OutlinedButton(
-  //                       style: ButtonStyle(
-  //                           fixedSize: MaterialStateProperty.all(
-  //                               Size.fromWidth(150.0)),
-  //                           shape: MaterialStateProperty.all(
-  //                               RoundedRectangleBorder(
-  //                             borderRadius: BorderRadius.circular(7.0),
-  //                           ))),
-  //                       onPressed: () => {_disconnectSled()},
-  //                       child: const Text('Disconnect'),
-  //                     ),
-  //                   ]),
-  //               Row(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.end,
-  //                   children: [
-  //                     OutlinedButton(
-  //                       style: ButtonStyle(
-  //                           fixedSize: MaterialStateProperty.all(
-  //                               Size.fromWidth(150.0)),
-  //                           shape: MaterialStateProperty.all(
-  //                               RoundedRectangleBorder(
-  //                                   borderRadius: BorderRadius.circular(7.0)))),
-  //                       onPressed: () => {_scan()},
-  //                       child: const Text('Start Scan'),
-  //                     ),
-  //                     OutlinedButton(
-  //                       style: ButtonStyle(
-  //                           fixedSize: MaterialStateProperty.all(
-  //                               Size.fromWidth(150.0)),
-  //                           shape: MaterialStateProperty.all(
-  //                               RoundedRectangleBorder(
-  //                                   borderRadius: BorderRadius.circular(7.0)))),
-  //                       onPressed: () => {_stopScan()},
-  //                       child: const Text('Stop Scan'),
-  //                     ),
-  //                   ]),
-  //               TabBar(
-  //                 tabs: [
-  //                   Tab(
-  //                     child: Text('Scanned Items'.toUpperCase(),
-  //                         style: TextStyle(fontFamily: 'medium')),
-  //                   ),
-  //                   Expanded(
-  //                       child: TabBarView(
-  //                     controller: _tabController,
-  //                     children: [
-  //                       _buildScans(),
-  //                       _buildNotesdtl(),
-  //                     ],
-  //                   ))
-  //                 ],
-  //               )
-  //             ],
-  //           )));
-  // }
-
   static const platform =
       const MethodChannel('com.tagteka.Prodctivo/bluebirdSled');
 
@@ -503,6 +403,8 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
 
   Future _connectSled() async {
     String connected;
+    FToast fToast = FToast();
+    fToast.init(context);
     try {
       final String msg = await platform.invokeMethod('connectSled');
       connected = msg;
@@ -515,9 +417,37 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       connected = e.toString();
       print(e);
     }
+    fToast.showToast(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 12.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(9.0),
+            color: Colors.greenAccent,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.check),
+              SizedBox(
+                width: 6.0,
+              ),
+              Text("Scanner connected.",
+                  style: TextStyle(fontSize: 12, color: Colors.black87)),
+            ],
+          ),
+        ),
+        positionedToastBuilder: (context, child) {
+          return Positioned(child: child, bottom: 10, right: 10);
+        },
+        toastDuration: Duration(seconds: 1, microseconds: 500));
+    setState(() {
+      _scans.clear();
+    });
   }
 
   Future _disconnectSled() async {
+    FToast fToast = FToast();
+    fToast.init(context);
     String connected;
     try {
       final String msg = await platform.invokeMethod('disconnectSled');
@@ -525,16 +455,42 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       setState(() {
         connectionStatus = 'Disconnected';
         _connected = connected;
+        _scans.clear();
       });
     } on PlatformException catch (e) {
       connected = e.toString();
       print(e);
     }
+    fToast.showToast(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 12.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(9.0),
+            color: Color.fromARGB(213, 255, 62, 62),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline_rounded),
+              SizedBox(
+                width: 6.0,
+              ),
+              Text("Scanner disconnected.",
+                  style: TextStyle(fontSize: 12, color: Colors.black87)),
+            ],
+          ),
+        ),
+        positionedToastBuilder: (context, child) {
+          return Positioned(child: child, bottom: 10, right: 10);
+        },
+        toastDuration: Duration(seconds: 1, microseconds: 500));
+    // setState(() {
+    //   _scans.clear();
+    // });
+    return;
   }
 
   Future _scan() async {
-    FToast fToast = FToast();
-    fToast.init(context);
     if (isConnected == false) {
       List<String> scans = [];
       fToast.showToast(
@@ -563,6 +519,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       setState(() {
         _scans = scans;
       });
+      // on
       return;
     }
     List<String> scans = [];

@@ -95,7 +95,6 @@ class _ScanDetailState extends State<ScanDetail> {
     currentDetails.add('Date: ' + am!.date.toString());
     comments.addAll(am!.comments);
     urls.addAll(am!.images);
-    setState(() {});
 
     return Column(
       children: [
