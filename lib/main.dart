@@ -33,6 +33,7 @@ import 'package:productivo/pages/welcome.dart';
 import 'package:productivo/pages/scan.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
