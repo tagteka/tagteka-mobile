@@ -60,11 +60,19 @@ public class MainActivity extends FlutterActivity {
                             }else if (call.method.equals("fetchList")){
                                 result.success(inventory);
                             }
+                            else if (call.method.equals("getConnectionStatus")){
+                                result.success(getConnectionStatus());
+                            }
                             else {
                                 result.notImplemented();
                             }
                         }
                 );
+    }
+
+    private String getConnectionStatus(){
+        return Reader.getReader(this.getContext(), mConnectivityHandler) != null ?
+                mReader.SD_GetConnectState() == 1 ? "Connected" : "Disconnected" : "Disconnected";
     }
 
     private String connectSled() {

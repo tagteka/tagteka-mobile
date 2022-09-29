@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:productivo/pages/edit_asset.dart';
 import 'package:productivo/widget/NavBar.dart';
 import '../components/styles.dart';
 import 'package:flutter/material.dart';
 import '../models/asset_model.dart';
 import 'package:productivo/networking/requests.dart';
+import 'package:productivo/pages/edit_asset.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../pages/scan_detail.dart';
 
 class Scan extends StatefulWidget {
@@ -25,15 +28,16 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    super.initState();
     _tabController = TabController(length: 1, vsync: this);
     _disconnectSled();
+    super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
     _tabController!.dispose();
+    _disconnectSled();
   }
 
   @override
@@ -204,7 +208,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ScanDetail(string: str),
+                    builder: (context) => ScanDetail(am: snapshot.data),
                   ),
                 );
               },
@@ -295,7 +299,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ScanDetail(string: str),
+                      builder: (context) => EditAsset(str: str, newItem: true),
                     ),
                   );
                 },
@@ -529,6 +533,38 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   }
 
   Future _scan() async {
+    FToast fToast = FToast();
+    fToast.init(context);
+    if (isConnected == false) {
+      List<String> scans = [];
+      fToast.showToast(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(9.0),
+              color: Color.fromARGB(213, 255, 62, 62),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.error_outline_rounded),
+                SizedBox(
+                  width: 6.0,
+                ),
+                Text("Scanner disconnected.",
+                    style: TextStyle(fontSize: 12, color: Colors.black87)),
+              ],
+            ),
+          ),
+          positionedToastBuilder: (context, child) {
+            return Positioned(child: child, bottom: 10, right: 10);
+          },
+          toastDuration: Duration(seconds: 1, microseconds: 500));
+      setState(() {
+        _scans = scans;
+      });
+      return;
+    }
     List<String> scans = [];
     try {
       final temp = await platform.invokeMethod('scanTags');

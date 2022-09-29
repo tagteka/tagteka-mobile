@@ -2,7 +2,6 @@
 //
 //     final assetModel = assetModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 AssetModel assetModelFromJson(String str) =>
