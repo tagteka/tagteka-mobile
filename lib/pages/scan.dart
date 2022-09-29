@@ -206,7 +206,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ScanDetail(string: str),
+                    builder: (context) => ScanDetail(am: snapshot.data),
                   ),
                 );
               },

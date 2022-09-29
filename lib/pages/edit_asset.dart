@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../components/styles.dart';
-import 'package:html_editor_enhanced/html_editor.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../models/asset_model.dart';
+import '../networking/requests.dart';
 
 class EditAsset extends StatefulWidget {
   static const String id = 'EditAsset';
@@ -28,7 +29,18 @@ class _EditAssetState extends State<EditAsset> {
   String title = 'Edit an existing item.';
 
   _EditAssetState(String string, AssetModel? am, bool newItem) {
-    this.am = am;
+    this.am = newItem
+        ? new AssetModel(
+            id: str,
+            category: '',
+            comments: [],
+            date: DateTime.now(),
+            images: [],
+            lastService: DateTime.now(),
+            name: '',
+            tagtekaId: '',
+            type: '')
+        : am;
     str = string;
     this.newItem = newItem;
     title = newItem ? 'Add a New Asset' : 'Edit Asset';
@@ -44,29 +56,33 @@ class _EditAssetState extends State<EditAsset> {
     return GestureDetector(
       onTap: () {},
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: appColor,
-          iconTheme: const IconThemeData(color: Colors.white),
-          elevation: 0,
-          title: Text(title),
-          actions: [
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                primary: appColor,
+          appBar: AppBar(
+            backgroundColor: appColor,
+            iconTheme: const IconThemeData(color: Colors.white),
+            elevation: 0,
+            title: Text(title),
+            actions: [
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  primary: appColor,
+                ),
+                child: Text("Save".toUpperCase()),
               ),
-              child: Text("Save".toUpperCase()),
-            ),
-          ],
-        ),
-        body: _buildForm(),
-        // body: SingleChildScrollView(
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: <Widget>[],
-        //   ),
-        // ),
-      ),
+            ],
+          ),
+          body: Column(
+            children: [
+              _buildForm(),
+            ],
+          )
+          // body: SingleChildScrollView(
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: <Widget>[],
+          //   ),
+          // ),
+          ),
     );
   }
 
@@ -77,8 +93,9 @@ class _EditAssetState extends State<EditAsset> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
-              decoration: InputDecoration(
-                  hintText: (this.newItem ? 'Enter the Asset Name' : am!.name)),
+              onSaved: (newValue) =>
+                  am!.name = newValue == null ? am!.name : newValue,
+              initialValue: newItem ? '' : am!.name,
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter an asset name';
@@ -89,7 +106,10 @@ class _EditAssetState extends State<EditAsset> {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: ElevatedButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {}
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  Requests().updateAsset(am);
+                }
               },
               child: const Text('Submit'),
             ),
