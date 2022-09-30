@@ -1,5 +1,6 @@
 library requests;
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -41,6 +42,43 @@ class Requests {
     return cont;
   }
 
+  Future<bool> updateCommentsWrapper(AssetModel? am) async {
+    bool cont = true;
+    while (cont) {
+      await Future.delayed(Duration(milliseconds: 500));
+      print('trying comment update');
+      var snapshot = await (updateComments(am));
+      cont = !snapshot;
+    }
+    return cont;
+  }
+
+  Future<bool> updateComments(AssetModel? am) async {
+    var baseUrl = 'https://tagteka-test.herokuapp.com/api/setComments?id=' +
+        am!.id +
+        '&' +
+        'key=e3e77702408077f5a199a080c65b95ea6dd63205e7bd2c2c65a07195c0d14d16';
+    var body = new Map<String, dynamic>();
+    body['comments'] = am.comments;
+    body['_id'] = am.id;
+    var newBody = json.encode(body);
+    print(newBody);
+    var url = Uri.parse(baseUrl);
+    var response;
+    try {
+      response = await http.post(url, body: newBody, headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json'
+      }).timeout(Duration(milliseconds: 500));
+    } on SocketException {
+      return false;
+    }
+    if (response.statusCode == 400) {
+      throw NullThrownError();
+    } else
+      return true;
+  }
+
   Future<bool> updateAsset(AssetModel? am) async {
     // String baseUrl =
     //     'https://tagteka-test.herokuapp.com/api/updateAsset?key=e3e77702408077f5a199a080c65b95ea6dd63205e7bd2c2c65a07195c0d14d16&id=' +
@@ -69,7 +107,8 @@ class Requests {
     var url = Uri.parse(baseUrl);
     var response;
     try {
-      response = await http.post(url, body: map).timeout(Duration(seconds: 2));
+      response =
+          await http.post(url, body: map).timeout(Duration(milliseconds: 500));
     } on SocketException {
       return false;
     }

@@ -352,7 +352,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   chips(type) {
     Color c;
     switch (type) {
-      case 'fire safety':
+      case 'fireSafety':
         c = Color.fromARGB(255, 240, 65, 65);
         break;
       case 'plumbing':
@@ -368,7 +368,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       padding: EdgeInsets.only(right: 8),
       child: Chip(
         label: Text(
-          type.toUpperCase(),
+          type == 'fireSafety' ? 'FIRE SAFETY' : type.toUpperCase(),
           style: TextStyle(color: Colors.white, fontSize: 12),
         ),
         backgroundColor: c,

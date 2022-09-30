@@ -6,6 +6,8 @@ import '../models/asset_model.dart';
 import '../networking/requests.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:productivo/pages/scan.dart';
+import 'package:reactive_forms/reactive_forms.dart';
+import 'package:productivo/pages/edit_comments.dart';
 
 class EditAsset extends StatefulWidget {
   static const String id = 'EditAsset';
@@ -84,10 +86,8 @@ class _EditAssetState extends State<EditAsset> {
               ),
             ],
           ),
-          body: Column(
-            children: [
-              _buildForm(),
-            ],
+          body: SingleChildScrollView(
+            child: _buildForm(),
           )
           // body: SingleChildScrollView(
           //   child: Column(
@@ -111,19 +111,19 @@ class _EditAssetState extends State<EditAsset> {
         ret.add(
           DropdownMenuItem(
             child: Text('Valves'),
-            value: 'valve',
+            value: '0',
           ),
         );
         ret.add(
           DropdownMenuItem(
             child: Text('Pumps'),
-            value: 'pump',
+            value: '1',
           ),
         );
         ret.add(
           DropdownMenuItem(
             child: Text('Backflow'),
-            value: 'backflow',
+            value: '2',
           ),
         );
         break;
@@ -131,19 +131,19 @@ class _EditAssetState extends State<EditAsset> {
         ret.add(
           DropdownMenuItem(
             child: Text('Alarms'),
-            value: 'alarm',
+            value: '0',
           ),
         );
         ret.add(
           DropdownMenuItem(
             child: Text('Circuit Breakers'),
-            value: 'circuitBreaker',
+            value: '1',
           ),
         );
         ret.add(
           DropdownMenuItem(
             child: Text('Sprinklers'),
-            value: 'sprinkler',
+            value: '2',
           ),
         );
         break;
@@ -151,13 +151,19 @@ class _EditAssetState extends State<EditAsset> {
         ret.add(
           DropdownMenuItem(
             child: Text('Motors'),
-            value: 'motors',
+            value: '0',
           ),
         );
         ret.add(
           DropdownMenuItem(
             child: Text('Batteries'),
-            value: 'batteries',
+            value: '1',
+          ),
+        );
+        ret.add(
+          DropdownMenuItem(
+            child: Text('Batteries'),
+            value: '2',
           ),
         );
         break;
@@ -185,8 +191,32 @@ class _EditAssetState extends State<EditAsset> {
     return ret;
   }
 
+  // Widget _buildForm() {
+  //   final form = FormGroup(
+  //     {
+  //       'name': FormControl<String>(value: 'John Doe'),
+  //       'email': FormControl<String>(),
+  //     },
+  //   );
+  //   return ReactiveForm(
+  //       formGroup: form,
+  //       child: Column(
+  //         children: [
+  //           ReactiveTextField(formControlName: 'name'),
+  //           ReactiveTextField(
+  //             formControlName: 'email',
+  //           ),
+  //         ],
+  //       ));
+  // }
+
+  // String _value = "";
+
   Widget _buildForm() {
     return Form(
+      onChanged: () {
+        setState(() => {});
+      },
       key: _formKey,
       child: Padding(
         padding: EdgeInsets.only(left: 10.0),
@@ -240,7 +270,7 @@ class _EditAssetState extends State<EditAsset> {
                 am!.category = newValue.toString();
                 setState(
                   () {
-                    _types = correspondingTypes(newValue.toString());
+                    _types = correspondingTypes(am!.category);
                   },
                 );
               },
@@ -253,33 +283,42 @@ class _EditAssetState extends State<EditAsset> {
                 return null;
               },
             ),
-            DropdownButtonFormField(
-              items: _types,
-              onChanged: (newValue) => am!.type = newValue.toString(),
-              decoration: const InputDecoration(labelText: 'Type'),
-              onSaved: (newValue) => am!.type = newValue.toString(),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Select a type';
-                }
-                return null;
+            _buildSecondDropdown(am), // _formKey.currentState!.reset();
+
+            TextFormField(
+                decoration: const InputDecoration(
+                    labelText: 'Last Service (YYYY-MM-DD)'),
+                onSaved: (newValue) => am!.lastService = newValue == null
+                    ? am!.lastService
+                    : DateTime.parse(newValue),
+                initialValue:
+                    newItem ? '' : generateProperDate(am!.lastService),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a date.';
+                  } else {
+                    var pattern1 =
+                        r'\^[0-9][0-9][0-9][0-9]-(1[0-2])-[0-3][0-9]$|^[0-9][0-9][0-9][0-9]-0[1-9]-[0-3][0-9]$';
+                    RegExp exp = RegExp(pattern1);
+                    RegExpMatch? match = exp.firstMatch(value);
+                    if (match == null) return 'Does not match pattern.';
+                    // print(match![0]);
+                  }
+                  return null;
+                }),
+
+            TextButton(
+              child: Text('Edit Comments'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditComments(am: am),
+                  ),
+                );
               },
             ),
-            // TextFormField(
-            //     decoration: const InputDecoration(
-            //         labelText: 'Last Service (YYYY-MM-DD)'),
-            //     onSaved: (newValue) =>
-            //         am!.name = newValue == null ? am!.name : newValue,
-            //     initialValue: newItem ? '' : am!.name,
-            //     validator: (String? value) {
-            //       if (value == null || value.isEmpty) {
-            //         return 'Please enter an asset name';
-            //       } else {
-            //         var pattern1 = "/^[0-9][0-9][0-9][0-9]-(1[0-2])-[0-3][0-9]$|^[0-9][0-9][0-9][0-9]-0[1-9]-[0-3][0-9]$/";
-            //         RegExp exp = RegExp(pattern);
-            //       }
-            //       return null;
-            //     }),
+
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
               child: ElevatedButton(
@@ -303,5 +342,54 @@ class _EditAssetState extends State<EditAsset> {
         ),
       ),
     );
+  }
+
+  String generateProperDate(DateTime date) {
+    String ret = '';
+    ret += date.year.toString() + "-";
+    if (date.month < 10) ret += '0';
+    ret += date.month.toString() + '-';
+    if (date.day < 10) ret += '0';
+    ret += date.day.toString();
+    return ret;
+  }
+
+  String indexToType(String i) {
+    var type = _types[int.parse(i)].child as Text;
+    return type.data!.toLowerCase();
+  }
+
+  Widget _buildSecondDropdown(AssetModel? am) {
+    return DropdownButtonFormField(
+      items: _types,
+      onChanged: (newValue) => am!.type = indexToType(newValue.toString()),
+      decoration: const InputDecoration(labelText: 'Type'),
+      onSaved: (newValue) => am!.type = indexToType(newValue.toString()),
+      validator: (String? value) {
+        if (value == null || value.isEmpty) {
+          return 'Select a type';
+        }
+        return null;
+      },
+    );
+    // } else {
+    //   return DropdownButtonFormField(
+    //     value: '',
+    //     items: _types,
+    //     onChanged: (newValue) {
+    //       am!.type = newValue.toString();
+    //       _types = correspondingTypes(am.category);
+    //     },
+    //     decoration: const InputDecoration(labelText: 'Type'),
+    //     onSaved: (newValue) => am!.type = newValue.toString(),
+    //     validator: (String? value) {
+    //       if (value == null || value.isEmpty) {
+    //         return 'Select a type';
+    //       }
+    //       return null;
+    //     },
+    //   );
+    // }
+    // }
   }
 }
