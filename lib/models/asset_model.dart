@@ -2,6 +2,7 @@
 //
 //     final assetModel = assetModelFromJson(jsonString);
 
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 AssetModel assetModelFromJson(String str) =>
@@ -12,49 +13,100 @@ String assetModelToJson(AssetModel data) => json.encode(data.toJson());
 class AssetModel {
   AssetModel({
     required this.id,
-    required this.category,
-    required this.comments,
-    required this.date,
-    required this.images,
-    required this.lastService,
-    required this.name,
-    required this.tagtekaId,
     required this.type,
+    this.model,
+    this.serial,
+    this.size,
+    this.temp,
+    required this.location,
+    required this.owner,
+    this.dateInstalled,
+    this.servicingRecords,
+    this.nextServiceDate,
+    this.comments,
+    required this.category,
+    this.assetModelId,
+    required this.name,
+    required this.avatar,
+    required this.tagId,
+    this.lastService,
   });
 
   String id;
-  String category;
-  List<String> comments;
-  DateTime date;
-  List<String> images;
-  DateTime lastService;
-  String name;
-  String tagtekaId;
   String type;
+  String? model;
+  String? serial;
+  String? size;
+  String? temp;
+  String location;
+  String owner;
+  String? dateInstalled;
+  List<String>? servicingRecords;
+  List<String>? nextServiceDate;
+  List<String>? comments;
+  String category;
+  int? assetModelId;
+  String name;
+  String avatar;
+  String tagId;
+  DateTime? lastService;
 
   factory AssetModel.fromJson(Map<String, dynamic> json) => AssetModel(
-        id: json["_id"],
-        category: json["category"],
-        comments: List<String>.from(json["comments"].map((x) => x)),
-        date: DateTime.parse(json["date"]),
-        images: List<String>.from(json["images"].map((x) => x)),
-        lastService: DateTime.parse(json["lastService"]),
-        name: json["name"],
-        tagtekaId: json["tagtekaId"],
-        type: json["type"],
+        id: json["_id"] == null ? null : json["_id"],
+        type: json["type"] == null ? null : json["type"],
+        model: json["model"] == null ? null : json["model"],
+        serial: json["serial"] == null ? null : json["serial"],
+        size: json["size"] == null ? null : json["size"],
+        temp: json["temp"] == null ? null : json["temp"],
+        location: json["location"] == null ? null : json["location"],
+        owner: json["owner"] == null ? null : json["owner"],
+        dateInstalled:
+            json["dateInstalled"] == null ? null : json["dateInstalled"],
+        servicingRecords: json["servicingRecords"] == null
+            ? null
+            : List<String>.from(json["servicingRecords"].map((x) => x)),
+        nextServiceDate: json["nextServiceDate"] == null
+            ? null
+            : List<String>.from(json["nextServiceDate"].map((x) => x)),
+        comments: json["comments"] == null
+            ? null
+            : List<String>.from(json["comments"].map((x) => x)),
+        category: json["category"] == null ? null : json["category"],
+        assetModelId: json["id"] == null ? null : json["id"],
+        name: json["name"] == null ? null : json["name"],
+        avatar: json["avatar"] == null ? null : json["avatar"],
+        tagId: json["tagID"] == null ? null : json["tagID"],
+        lastService: json["lastService"] == null
+            ? null
+            : DateTime.parse(json["lastService"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "_id": id,
-        "category": category,
-        "comments": List<dynamic>.from(comments.map((x) => x)),
-        "date":
-            "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
-        "images": List<dynamic>.from(images.map((x) => x)),
-        "lastService":
-            "${lastService.year.toString().padLeft(4, '0')}-${lastService.month.toString().padLeft(2, '0')}-${lastService.day.toString().padLeft(2, '0')}",
+        "_id": id == null ? null : id,
+        "type": type == null ? null : type,
+        "model": model == null ? null : model,
+        "serial": serial == null ? null : serial,
+        "size": size == null ? null : size,
+        "temp": temp == null ? null : temp,
+        "location": location == null ? null : location,
+        "owner": owner == null ? null : owner,
+        "dateInstalled": dateInstalled == null ? null : dateInstalled,
+        "servicingRecords": servicingRecords == null
+            ? null
+            : List<dynamic>.from(servicingRecords!.map((x) => x)),
+        "nextServiceDate": nextServiceDate == null
+            ? null
+            : List<dynamic>.from(nextServiceDate!.map((x) => x)),
+        "comments": comments == null
+            ? null
+            : List<dynamic>.from(comments!.map((x) => x)),
+        "category": category == null ? null : category,
+        "id": assetModelId == null ? null : assetModelId,
         "name": name,
-        "tagtekaId": tagtekaId,
-        "type": type,
+        "avatar": avatar == null ? null : avatar,
+        "tagID": tagId == null ? null : tagId,
+        "lastService": lastService == null
+            ? null
+            : "${lastService!.year.toString().padLeft(4, '0')}-${lastService!.month.toString().padLeft(2, '0')}-${lastService!.day.toString().padLeft(2, '0')}",
       };
 }

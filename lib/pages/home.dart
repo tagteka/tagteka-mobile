@@ -8,10 +8,15 @@
 */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:productivo/pages/asset_lookup.dart';
 import 'package:productivo/pages/create_new_event.dart';
 import 'package:productivo/widget/NavBar.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import '../components/styles.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:drop_shadow/drop_shadow.dart';
+import 'package:productivo/pages/scan.dart';
+import 'package:productivo/pages/emergency.dart';
 
 class Home extends StatefulWidget {
   static const String id = 'Home';
@@ -23,232 +28,330 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  TabController? _tabController;
-
-  List clickedData = [];
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController!.dispose();
-  }
-
-  final DatePickerController _controller = DatePickerController();
+  static const Color color4 = Color.fromARGB(255, 255, 255, 255);
+  static const Color color3 = Color.fromARGB(156, 128, 221, 245);
+  static const Color color2 = Color.fromARGB(183, 0, 138, 230);
+  static const Color color = Color.fromARGB(211, 15, 113, 241);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return (Scaffold(
       drawer: NavBar(),
       appBar: AppBar(
-        backgroundColor: appColor,
-        iconTheme: const IconThemeData(color: Colors.white),
-        elevation: 0,
-        toolbarHeight: 200,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: [
+            SizedBox(width: 62),
             Text(
-              "2022",
-              style: TextStyle(
-                color: Colors.white,
-              ),
+              'TAGTEKA',
+              // style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
-        actions: [
-          Container(
-            padding: EdgeInsets.all(16),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 16,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.add,
-                  size: 16,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CreateNewEvent()));
-                },
-              ),
-            ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: <Color>[color, color2, color3, color4]),
           ),
-        ],
-        bottom: PreferredSize(
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-            ),
-            child: calender(),
-          ),
-          preferredSize: const Size(0.0, 60.0),
         ),
       ),
-      body: _buildBody(),
-    );
+      body: buildBody(),
+    ));
   }
 
-  Widget _buildBody() {
-    return SafeArea(
+  Widget buildBody() {
+    return Container(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          TabBar(
-            unselectedLabelColor: Colors.black45,
-            labelColor: appColor,
-            controller: _tabController,
-            indicatorColor: appColor,
-            labelStyle: TextStyle(fontFamily: 'medium', fontSize: 14),
-            unselectedLabelStyle: TextStyle(fontFamily: 'medium', fontSize: 14),
-            indicatorSize: TabBarIndicatorSize.tab,
-            tabs: [
-              Tab(
-                child: Text('All Task'.toUpperCase(),
-                    style: TextStyle(fontFamily: 'medium')),
-              ),
-              Tab(
-                child: Text('To-do'.toUpperCase(),
-                    style: TextStyle(fontFamily: 'medium')),
-              ),
-              Tab(
-                child: Text('Events'.toUpperCase(),
-                    style: TextStyle(fontFamily: 'medium')),
-              ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // DropShadow(
+              Container(
+                width: 150,
+                height: 150,
+                // decoration: BoxDecoration(
+                //   borderRadius: BorderRadius.all(Radius.circular(8)),
+                //   border: Border(
+                //     top: BorderSide(
+                //         width: 2, color: Color.fromARGB(200, 0, 0, 0)),
+                //     left: BorderSide(
+                //         width: 2, color: Color.fromARGB(200, 0, 0, 0)),
+                //     right: BorderSide(
+                //         width: 2, color: Color.fromARGB(200, 0, 0, 0)),
+                //     bottom: BorderSide(
+                //         width: 2, color: Color.fromARGB(200, 0, 0, 0)),
+                //   ),
+                // ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(75, 100, 100, 100),
+                      blurRadius: 15,
+                      offset: const Offset(-3, 5),
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    IconButton(
+                      hoverColor: Colors.transparent,
+                      iconSize: 100,
+                      icon: Image.asset('assets/images/001scanner.png',
+                          height: 75),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Scan()),
+                        );
+                      },
+                    ),
+                    Text(
+                      'SCAN',
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        textBaseline: TextBaseline.ideographic,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  .animate()
+                  .fade(
+                    delay: Duration(milliseconds: 100),
+                    duration: Duration(milliseconds: 600),
+                  )
+                  .moveY(begin: 25, end: 0),
+              //   blurRadius: 3,
+              //   spread: 1,
+              //   offset: const Offset(3, 3),
+              // ),
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(75, 100, 100, 100),
+                      blurRadius: 15,
+                      offset: const Offset(-3, 5),
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    IconButton(
+                      hoverColor: Colors.transparent,
+                      iconSize: 100,
+                      icon: Image.asset('assets/images/001-fixed-asset.png',
+                          height: 75),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AssetLookup()),
+                        );
+                      },
+                    ),
+                    Text(
+                      'ASSETS',
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        textBaseline: TextBaseline.ideographic,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  .animate()
+                  .fade(
+                    delay: Duration(milliseconds: 100),
+                    duration: Duration(milliseconds: 600),
+                  )
+                  .moveY(begin: 25, end: 0),
             ],
           ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildTaskdtl(),
-                _buildTaskdtl(),
-                _buildTaskdtl(),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(75, 100, 100, 100),
+                      blurRadius: 15,
+                      offset: const Offset(-3, 5),
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    IconButton(
+                      hoverColor: Colors.transparent,
+                      iconSize: 100,
+                      icon: Image.asset('assets/images/003-dashboard.png',
+                          height: 75),
+                      onPressed: () {},
+                    ),
+                    Text(
+                      'ANALYTICS',
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        textBaseline: TextBaseline.ideographic,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  .animate()
+                  .fade(
+                    delay: Duration(milliseconds: 100),
+                    duration: Duration(milliseconds: 600),
+                  )
+                  .moveY(begin: 25, end: 0),
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(75, 100, 100, 100),
+                      blurRadius: 15,
+                      offset: const Offset(-3, 5),
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    IconButton(
+                      hoverColor: Colors.transparent,
+                      iconSize: 100,
+                      icon: Image.asset('assets/images/email.png', height: 75),
+                      onPressed: () {},
+                    ),
+                    Text(
+                      'EMAIL',
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        textBaseline: TextBaseline.ideographic,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  .animate()
+                  .fade(
+                    delay: Duration(milliseconds: 100),
+                    duration: Duration(milliseconds: 600),
+                  )
+                  .moveY(begin: 25, end: 0),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTaskdtl() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      color: backgroundColor,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                Text("9",
-                    style: TextStyle(fontFamily: 'semibold', fontSize: 24)),
-                Text("Fri".toUpperCase(),
-                    style: TextStyle(fontFamily: 'semibold', fontSize: 10)),
-              ],
-            ),
-          ),
-          SizedBox(width: 10),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildATask("Meeting with Client", "10.00", false),
-                _buildATask("Meditate", "11.00", false),
-                _buildATask("Bothering Boss", "12.00", true),
-                _buildATask("Helping Friends", "01.25", false),
-                _buildATask("Meeting with Boss", "2.00", false),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildATask(txt, time, current) {
-    return GestureDetector(
-      onTap: () {
-        print('tap');
-        setState(() {
-          if (clickedData.contains(time)) {
-            clickedData.remove(time);
-          } else {
-            clickedData.add(time);
-          }
-        });
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: clickedData.contains(time)
-              ? Colors.black12
-              : current == true
-                  ? appColor2
-                  : Colors.white,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        margin: EdgeInsets.only(bottom: 10),
-        width: MediaQuery.of(context).size.width * .73,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(txt,
-                style: TextStyle(
-                  fontFamily: 'semibold',
-                  fontSize: 14,
-                  color: clickedData.contains(time)
-                      ? Colors.black
-                      : current == true
-                          ? Colors.white
-                          : Colors.black,
-                )),
-            Text(time,
-                style: TextStyle(
-                  fontFamily: 'medium',
-                  fontSize: 14,
-                  color: clickedData.contains(time)
-                      ? Colors.black
-                      : current == true
-                          ? Colors.white
-                          : Colors.black,
-                )),
-          ],
-        ),
-      ),
-    );
-  }
-
-  calender() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 16),
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          DatePicker(
-            DateTime.now(),
-            width: 55,
-            height: 100,
-            controller: _controller,
-            dateTextStyle: TextStyle(color: Colors.black54, fontSize: 16),
-            initialSelectedDate: DateTime.now(),
-            selectionColor: appColor,
-            selectedTextColor: Colors.white,
-            inactiveDates: [DateTime.now().add(Duration(days: 4))],
-            onDateChange: (date) {
-              setState(() {});
-            },
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(75, 100, 100, 100),
+                      blurRadius: 15,
+                      offset: const Offset(-3, 5),
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    IconButton(
+                      hoverColor: Colors.transparent,
+                      iconSize: 100,
+                      icon: Image.asset('assets/images/009-calendar.png',
+                          height: 60),
+                      onPressed: () {},
+                    ),
+                    Text(
+                      'CALENDAR',
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        textBaseline: TextBaseline.ideographic,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  .animate()
+                  .fade(
+                    delay: Duration(milliseconds: 100),
+                    duration: Duration(milliseconds: 600),
+                  )
+                  .moveY(begin: 25, end: 0),
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(75, 100, 100, 100),
+                      blurRadius: 15,
+                      offset: const Offset(-3, 5),
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    IconButton(
+                      hoverColor: Colors.transparent,
+                      iconSize: 100,
+                      icon: Image.asset('assets/images/alert.png', height: 60),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Emergency()),
+                        );
+                      },
+                    ),
+                    Text(
+                      'EMERGENCY',
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        textBaseline: TextBaseline.ideographic,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+                  .animate()
+                  .fade(
+                    delay: Duration(milliseconds: 100),
+                    duration: Duration(milliseconds: 600),
+                  )
+                  .moveY(begin: 25, end: 0),
+            ],
+          )
         ],
       ),
     );

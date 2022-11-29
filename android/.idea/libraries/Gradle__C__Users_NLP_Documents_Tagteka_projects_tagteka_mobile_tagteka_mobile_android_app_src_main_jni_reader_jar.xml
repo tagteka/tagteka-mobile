@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: C./Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/android/app/src/main/jni/reader.jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/src/main/jni/reader.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:productivo/pages/login.dart';
 import '../components/styles.dart';
+import '../widget/elevated_button.dart';
 
 class Welcome extends StatefulWidget {
   static const String id = 'welcome';
@@ -28,7 +29,7 @@ class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appColor,
+      backgroundColor: Colors.white,
       body: _buildBody(),
     );
   }
@@ -42,15 +43,17 @@ class _WelcomeState extends State<Welcome> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Productivo",
-                    style: TextStyle(
-                      fontSize: 32,
-                      color: Colors.white,
-                      fontFamily: "medium",
-                    )),
+                // Text("Tagteka",
+                //     style: TextStyle(
+                //       fontSize: 32,
+                //       color: Colors.black,
+                //       fontFamily: "medium",
+                //     )),
+                Image(
+                    image: NetworkImage(
+                        'https://tagteka-assets.s3.us-east-2.amazonaws.com/TAGTEKA_Logo_V1.png')),
                 SizedBox(height: 30),
-                Text(
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. 500s, when an unknow",
+                Text("Building Data Solutions",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14, color: Colors.white)),
               ],
@@ -59,25 +62,33 @@ class _WelcomeState extends State<Welcome> {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                width: double.infinity,
-                child: ElevatedButton(
-                  child: const Text("Get Started",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: "medium",
-                      )),
+              MyElevatedButton(
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => const Login()));
                   },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    onPrimary: appColor,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                ),
-              ),
+                  child: Text('Login'))
+              // Container(
+              //   decoration: BoxDecoration(
+              //     gradient: LinearGradient(
+              //       colors: [Colors.lightBlue.shade200, Colors.blue.shade800],
+              //       begin: Alignment.centerLeft,
+              //       end: Alignment.centerRight,
+              //     ),
+              //   ),
+              //   width: double.infinity,
+              //   child: MyElevatedButton(
+              //     child: const Text("Login",
+              //         style: TextStyle(
+              //           fontSize: 16,
+              //           fontFamily: "medium",
+              //         )),
+              //     onPressed: () {
+              //       Navigator.push(context,
+              //           MaterialPageRoute(builder: (context) => const Login()));
+              //     },
+              //   ),
+              // ),
             ],
           ),
         ],

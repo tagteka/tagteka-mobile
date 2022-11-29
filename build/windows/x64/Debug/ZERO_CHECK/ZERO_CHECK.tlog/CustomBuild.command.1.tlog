@@ -1,0 +1,10 @@
+^C:\USERS\NLP\DOCUMENTS\TAGTEKA\PROJECTS\TAGTEKA-MOBILE\TAGTEKA-MOBILE\BUILD\WINDOWS\CMAKEFILES\B3698C321CC5349D243EE0C5A71F5CFA\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/windows -BC:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/productivo.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

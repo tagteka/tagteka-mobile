@@ -7,11 +7,14 @@
   Copyright and Good Faith Purchasers © 2021-present initappz.
 */
 import 'package:flutter/material.dart';
+import 'dart:io';
 import '../components/styles.dart';
 import 'package:productivo/networking/requests.dart';
 import 'package:productivo/models/asset_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:productivo/pages/edit_asset.dart';
+import 'package:camera_camera/camera_camera.dart';
+import 'package:flutter/material.dart';
 
 class ScanDetail extends StatefulWidget {
   static const String id = 'ScanDetail';
@@ -31,6 +34,21 @@ class _ScanDetailState extends State<ScanDetail> {
 
   _ScanDetailState(am) {
     this.am = am;
+  }
+
+  final photos = <File>[];
+
+  void openCamera() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => CameraCamera(
+                  onFile: (file) {
+                    photos.add(file);
+                    Navigator.pop(context);
+                    setState(() {});
+                  },
+                )));
   }
 
   @override
@@ -68,15 +86,39 @@ class _ScanDetailState extends State<ScanDetail> {
     );
   }
 
+  List<Widget> _buildImages(size) {
+    List<Widget> ret = [];
+    photos.forEach((element) {
+      ret.add(Container(
+        child: Image.file(element, fit: BoxFit.cover),
+        width: size.width,
+      ));
+    });
+    return ret;
+  }
+
+  List<Widget> merge(List<Widget> a, List<Widget> b) {
+    List<Widget> c = [];
+    c.addAll(a);
+    c.addAll(b);
+    return c;
+  }
+
   Widget _buildBody() {
+    final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
         children: [
           Container(
             color: Colors.white,
             child: Stack(
-              children: [_buildData()],
-            ),
+                children: merge([
+              _buildData(),
+              IconButton(
+                icon: Icon(Icons.camera),
+                onPressed: openCamera,
+              ),
+            ], _buildImages(size))),
           ),
         ],
       ),
@@ -88,13 +130,13 @@ class _ScanDetailState extends State<ScanDetail> {
     List<String> urls = [];
     List<String> comments = [];
     currentDetails.add("Name: " + am!.name);
-    currentDetails.add("TTid: " + am!.tagtekaId);
+    currentDetails.add("TTid: " + am!.tagId);
     currentDetails.add("Type: " + am!.type);
     currentDetails.add("Last service: " + am!.lastService.toString());
     currentDetails.add("id: " + am!.id);
-    currentDetails.add('Date: ' + am!.date.toString());
-    comments.addAll(am!.comments);
-    urls.addAll(am!.images);
+    currentDetails.add('Date: ' + am!.dateInstalled.toString());
+    comments.addAll(am!.comments!.toList());
+    // urls.addAll(am!.images);
 
     return Column(
       children: [

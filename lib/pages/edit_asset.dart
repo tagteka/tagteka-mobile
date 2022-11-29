@@ -39,12 +39,18 @@ class _EditAssetState extends State<EditAsset> {
             id: str,
             category: '',
             comments: [],
-            date: DateTime.now(),
-            images: [],
+            // date: DateTime.now(),
+            // images: [],
             lastService: DateTime.now(),
             name: '',
-            tagtekaId: '',
-            type: '')
+            // tagtekaId: '',
+            type: '',
+            tagId: str,
+            dateInstalled: "2131242151521",
+            avatar: '',
+            location: '',
+            owner: '',
+          )
         : am;
     this.newItem = newItem;
     title = newItem ? 'Add a New Asset' : 'Edit Asset';
@@ -344,9 +350,9 @@ class _EditAssetState extends State<EditAsset> {
     );
   }
 
-  String generateProperDate(DateTime date) {
+  String generateProperDate(DateTime? date) {
     String ret = '';
-    ret += date.year.toString() + "-";
+    ret += date!.year.toString() + "-";
     if (date.month < 10) ret += '0';
     ret += date.month.toString() + '-';
     if (date.day < 10) ret += '0';

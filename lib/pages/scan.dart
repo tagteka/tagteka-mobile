@@ -202,8 +202,8 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
         builder: (context, AsyncSnapshot<AssetModel?> snapshot) {
           if (snapshot.hasData) {
             String name = snapshot.data!.name;
-            String tagtekaId = snapshot.data!.tagtekaId;
-            String lastService = snapshot.data!.lastService.toString();
+            String tagID = snapshot.data!.id;
+            // String lastService = snapshot.data!.lastService.toString();
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -226,7 +226,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "$tagtekaId",
+                          "$tagID",
                           style:
                               TextStyle(fontFamily: 'semibold', fontSize: 18),
                         ),
@@ -277,7 +277,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
                                   ),
                                 ),
                                 Text(
-                                  "$lastService",
+                                  "Sept 30, 2022",
                                   style: TextStyle(
                                     color: Colors.black38,
                                     fontSize: 14,
@@ -352,13 +352,13 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
   chips(type) {
     Color c;
     switch (type) {
-      case 'fireSafety':
+      case 'Fire':
         c = Color.fromARGB(255, 240, 65, 65);
         break;
-      case 'plumbing':
+      case 'Plumbing':
         c = Color.fromARGB(255, 10, 135, 205);
         break;
-      case 'electrical':
+      case 'Electrical':
         c = Color.fromARGB(255, 245, 230, 20);
         break;
       default:
@@ -368,7 +368,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       padding: EdgeInsets.only(right: 8),
       child: Chip(
         label: Text(
-          type == 'fireSafety' ? 'FIRE SAFETY' : type.toUpperCase(),
+          type == 'Fire' ? 'FIRE SAFETY' : type.toUpperCase(),
           style: TextStyle(color: Colors.white, fontSize: 12),
         ),
         backgroundColor: c,
@@ -396,6 +396,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       _connectSled();
       _buttonText = "Disconnect";
     }
+    // _scan();
     setState(() {
       buttonText = _buttonText;
     });
@@ -408,7 +409,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
     try {
       final String msg = await platform.invokeMethod('connectSled');
       connected = msg;
-      final ret = await platform.invokeMethod('scanTags');
+      // final ret = await platform.invokeMethod('scanTags');
       setState(() {
         connectionStatus = 'Connected';
         _connected = connected;
@@ -417,6 +418,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
       connected = e.toString();
       print(e);
     }
+    print(connected);
     fToast.showToast(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 12.0),
@@ -518,6 +520,7 @@ class _Scan extends State<Scan> with SingleTickerProviderStateMixin {
           toastDuration: Duration(seconds: 1, microseconds: 500));
       setState(() {
         _scans = scans;
+        print(_scans);
       });
       // on
       return;

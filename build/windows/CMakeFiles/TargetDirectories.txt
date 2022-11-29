@@ -1,0 +1,10 @@
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/CMakeFiles/INSTALL.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/CMakeFiles/ALL_BUILD.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/CMakeFiles/ZERO_CHECK.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/flutter/CMakeFiles/flutter_wrapper_plugin.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/flutter/CMakeFiles/flutter_wrapper_app.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/flutter/CMakeFiles/flutter_assemble.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/flutter/CMakeFiles/INSTALL.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/runner/CMakeFiles/productivo.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/runner/CMakeFiles/INSTALL.dir
+C:/Users/NLP/Documents/Tagteka/projects/tagteka-mobile/tagteka-mobile/build/windows/runner/CMakeFiles/ALL_BUILD.dir

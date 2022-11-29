@@ -39,7 +39,7 @@ android {
         applicationId "com.example.prodctivo"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -52,6 +52,12 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 flutter {
@@ -60,4 +66,10 @@ flutter {
 
 dependencies {
     implementation fileTree(dir: '/home/tagteka/Desktop/lib/Library/', include: ['*.aar', '*.jar'], exclude: [])
+    implementation files('C:\\Users\\NLP\\Desktop\\bluebird-sled.jar')
+    implementation fileTree(dir: 'C:\\Users\\NLP\\Desktop\\lib\\lib', include: ['*.aar', '*.jar'], exclude: [])
+    implementation fileTree(dir: 'C:\\Users\\NLP\\Documents\\Tagteka\\projects\\tagteka-mobile\\tagteka-mobile\\android\\app\\src\\main\\jni', include: ['*.aar', '*.jar'], exclude: [])
+//    implementation 'androidx.appcompat:appcompat:1.5.1'
+//    api 'com.github.SpeedataG:UHF:8.2.6'
+//    api 'com.github.SpeedataG:Device:1.6.8'
 }

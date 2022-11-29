@@ -11,7 +11,6 @@ import '../components/styles.dart';
 
 class MyElevatedButton extends StatelessWidget {
   final double height;
-  final Gradient gradient;
   final VoidCallback? onPressed;
   final Widget child;
 
@@ -20,7 +19,6 @@ class MyElevatedButton extends StatelessWidget {
     required this.onPressed,
     required this.child,
     this.height = 50.0,
-    this.gradient = const LinearGradient(colors: [appColor, appColor2]),
   }) : super(key: key);
 
   @override
@@ -29,13 +27,14 @@ class MyElevatedButton extends StatelessWidget {
       width: double.infinity,
       height: height,
       decoration: BoxDecoration(
-        gradient: gradient,
+        gradient: LinearGradient(
+            colors: [Colors.cyan.shade300, Colors.blue.shade600]),
         borderRadius: BorderRadius.circular(6),
       ),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          primary: Colors.transparent,
+          backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
         ),
         child: child,

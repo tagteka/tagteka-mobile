@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\NLP\Documents\Tagteka\projects\tagteka-mobile\tagteka-mobile\build\windows\CMakeFiles\13af618f19a3a12b33ec0425b47a778f\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{EFB1F691-7B1C-3316-894A-142DD92F07F6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

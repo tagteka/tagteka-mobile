@@ -8,10 +8,14 @@
 */
 import 'package:flutter/material.dart';
 
-const appColor3 = Color(0xFF9597F3);
-const appColor = Color(0xFF7A92EE);
+// const appColor3 = Color(0xFF9597F3);
+// const appColor = Color(0xFF7A92EE);
 
-const appColor2 = Color(0xFF7EB4FE);
+// const appColor2 = Color(0xFF7EB4FE);
+
+const appColor2 = (Color.fromARGB(255, 29, 103, 240));
+const appColor = (Color.fromARGB(255, 6, 135, 255));
+const appColor3 = (Color.fromARGB(255, 33, 150, 243));
 const backgroundColor = Color.fromARGB(255, 243, 243, 243);
 
 textField(hint) {

@@ -28,7 +28,7 @@ class _EditComments extends State<EditComments>
 
   _EditComments(am) {
     this.am = am;
-    _commentsList.addAll(this.am!.comments);
+    // _commentsList.addAll(this.am!.comments);
   }
 
   @override
@@ -63,47 +63,51 @@ class _EditComments extends State<EditComments>
   }
 
   Widget _buildBody() {
-    return SingleChildScrollView(
-        child: Form(
-      key: _formKey,
-      child: Padding(
-        padding: EdgeInsets.only(left: 10.0),
-        child: Column(
-          children: merge(
-            merge(_buildTextFields(am!.comments), _newFields),
-            [
-              IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    setState(() {
-                      _newFields.add(
-                        TextFormField(
-                          onSaved: ((newValue) =>
-                              _commentsList.add(newValue.toString())),
-                          decoration:
-                              const InputDecoration(labelText: 'Comment: '),
-                          initialValue: '',
-                        ),
-                      );
-                    });
-                  }),
-              TextButton(
-                child: Text('Submit'),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    am!.comments = _commentsList;
-                    print(_commentsList);
-                    Isolate.spawn(Requests().updateCommentsWrapper, am);
-                  }
-                },
-              )
-            ],
-          ),
-        ),
-      ),
-    ));
+    return Text('data');
   }
+
+  // Widget _buildBody() {
+  //   return SingleChildScrollView(
+  //       child: Form(
+  //     key: _formKey,
+  //     child: Padding(
+  //       padding: EdgeInsets.only(left: 10.0),
+  //       child: Column(
+  //         children: merge(
+  //           merge(_buildTextFields(am!.comments), _newFields),
+  //           [
+  //             IconButton(
+  //                 icon: Icon(Icons.add),
+  //                 onPressed: () {
+  //                   setState(() {
+  //                     _newFields.add(
+  //                       TextFormField(
+  //                         onSaved: ((newValue) =>
+  //                             _commentsList.add(newValue.toString())),
+  //                         decoration:
+  //                             const InputDecoration(labelText: 'Comment: '),
+  //                         initialValue: '',
+  //                       ),
+  //                     );
+  //                   });
+  //                 }),
+  //             TextButton(
+  //               child: Text('Submit'),
+  //               onPressed: () {
+  //                 if (_formKey.currentState!.validate()) {
+  //                   _formKey.currentState!.save();
+  //                   am!.comments = _commentsList;
+  //                   print(_commentsList);
+  //                   Isolate.spawn(Requests().updateCommentsWrapper, am);
+  //                 }
+  //               },
+  //             )
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   ));
+  // }
 
   List<Widget> _buildTextFields(List<String> x) {
     return x.map((comment) {

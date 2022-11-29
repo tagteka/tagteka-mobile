@@ -1,0 +1,10 @@
+^C:\USERS\NLP\DOCUMENTS\TAGTEKA\PROJECTS\TAGTEKA-MOBILE\TAGTEKA-MOBILE\BUILD\WINDOWS\CMAKEFILES\B3698C321CC5349D243EE0C5A71F5CFA\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

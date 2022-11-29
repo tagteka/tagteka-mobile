@@ -1,14 +1,20 @@
 package com.example.prodctivo;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.lang.ref.WeakReference;
+import com.gg.reader.api.dal.GClient;
+import com.gg.reader.api.dal.HandlerTagEpcLog;
+import com.gg.reader.api.dal.HandlerTagEpcOver;
+import com.gg.reader.api.protocol.gx.EnumG;
+import com.gg.reader.api.protocol.gx.LogBaseEpcInfo;
+import com.gg.reader.api.protocol.gx.LogBaseEpcOver;
+import com.gg.reader.api.protocol.gx.MsgBaseInventoryEpc;
+import com.gg.reader.api.protocol.gx.MsgBaseStop;
+import com.gg.reader.api.protocol.gx.ParamEpcReadTid;
+import com.gg.reader.api.utils.HksPower;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,22 +23,12 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
-import co.kr.bluebird.sled.Reader;
-import co.kr.bluebird.sled.SDConsts;
-
-
-
 public class MainActivity extends FlutterActivity {
 
-    private Reader mReader;
-    private Context mContext;
-    private final ConnectivityHandler mConnectivityHandler = new ConnectivityHandler(this);
-    private final InventoryHandler mInventoryHandler = new InventoryHandler(this);
     private static final String CHANNEL = "com.tagteka.Prodctivo/bluebirdSled";
-    private TagListAdapter mAdapter;
-    private boolean mInventory = false;
+    GClient client = new GClient();//可自行写成全局单例复用
+    boolean isRead = false;
     private List<String> inventory = new ArrayList<>();
-    String debugMessage = "Reached1";
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -50,184 +46,120 @@ public class MainActivity extends FlutterActivity {
                                 if (toRet.equals("Successfully disconnected."))
                                     result.success(toRet);
                                 else result.error("UNAVAILABLE", toRet, null);
-                            }else if (call.method.equals("scanTags")){
+                            } else if (call.method.equals("scanTags")) {
                                 int toRet = scan();
                                 result.success(inventory);
 //                                else result.error("UNAVAILABLE", "Issue", null);
-                            }else if (call.method.equals("stopScan")){
-                                int toRet = stopScan();
-                                result.success(toRet);
-                            }else if (call.method.equals("fetchList")){
-                                result.success(inventory);
-                            }
-                            else if (call.method.equals("getConnectionStatus")){
-                                result.success(getConnectionStatus());
-                            }
-                            else {
+//                            } else if (call.method.equals("stopScan")) {
+//                                int toRet = stopScan();
+//                                result.success(toRet);
+//                            } else if (call.method.equals("fetchList")) {
+//                                result.success(inventory);
+//                            } else if (call.method.equals("getConnectionStatus")) {
+//                                result.success(getConnectionStatus());
+                            } else {
                                 result.notImplemented();
                             }
                         }
                 );
     }
-
-    private String getConnectionStatus(){
-        return Reader.getReader(this.getContext(), mConnectivityHandler) != null ?
-                mReader.SD_GetConnectState() == 1 ? "Connected" : "Disconnected" : "Disconnected";
+    public String disconnectSled() {
+        return "";
     }
 
-    private String connectSled() {
-        int ret = -100;
-        mContext = this.getContext();
-        boolean openResult = false;
-        String retString = "";
-        mReader = Reader.getReader(mContext, mConnectivityHandler);
-        if (mReader != null) {
-            openResult = mReader.SD_Open();
+    private void readEvent() {
+        MsgBaseInventoryEpc msg = new MsgBaseInventoryEpc();
+        msg.setAntennaEnable(EnumG.AntennaNo_1);
+        msg.setInventoryMode(EnumG.InventoryMode_Inventory);
+
+        //匹配某张标签TID读 E280110520007993A8F708A8  可选参数
+//        ParamEpcFilter filter = new ParamEpcFilter();
+//        String tid = "E280110520007993A8F708A8";
+//        filter.setArea(EnumG.ParamFilterArea_TID);//匹配epc -> EnumG.ParamFilterArea_EPC
+//        filter.setBitStart(0);//匹配epc -> 32
+//        filter.setHexData(tid);
+//        filter.setBitLength(tid.length() * 4);
+//        msg.setFilter(filter);
+
+//        读TID 默认只读EPC 可选参数
+        ParamEpcReadTid readTid = new ParamEpcReadTid();
+        readTid.setMode(EnumG.ParamTidMode_Auto);
+        readTid.setLen(6);//word
+
+        msg.setReadTid(readTid);
+
+        //读UserData 默认只读EPC 可选参数
+//        ParamEpcReadUserdata readUserdata = new ParamEpcReadUserdata();
+//        readUserdata.setStart(0);
+//        readUserdata.setLen(1);//word
+//        msg.setReadUserdata(readUserdata);
+
+        //读保留区 可选参数
+//        ParamEpcReadReserved readReserved = new ParamEpcReadReserved();
+//        readReserved.setStart(0);
+//        readReserved.setLen(4);//word
+//        msg.setReadReserved(readReserved);
+
+        client.sendSynMsg(msg);
+        if (msg.getRtCode() == 0) {
+            isRead = true;
+            Log.e("MsgBaseInventoryEpc", msg.getRtMsg());
         }
-        if (mReader != null && openResult == SDConsts.SD_OPEN_SUCCESS) {
-            ret = mReader.SD_Wakeup();
+        stopEvent();
+    }
+
+    // TODO: 停止读卡
+    private void stopEvent() {
+        MsgBaseStop msg = new MsgBaseStop();
+        client.sendSynMsg(msg);
+        if (msg.getRtCode() == 0) {
+            isRead = false;
+            Log.e("MsgBaseStop", msg.getRtMsg());
         }
-        if (ret == SDConsts.SDResult.SUCCESS) {
-            mReader.SD_Connect();
-            retString = "Successfully connected.";
+    }
+
+    public int scan(){
+        if (isRead){
+            stopEvent();
+            isRead = false;
+            return 0;
+        }
+        else{
+            readEvent();
+            isRead = true;
+            return 1;
+        }
+    }
+
+    public String connectSled(){
+        HksPower.uhf_power(1);
+        if (client.openCusAndroidSerial("/dev/ttysWK0:115200", 64, 100)) {
+            Log.e("client", "Serial port initialized successfully.");
+            subscriberHandler();//订阅上报回调
+            return "Successfully Connected.";
         } else {
-            retString = "No connection.";
+            Log.e("client", "Serial port initialization was unsuccessful.");
+            return "Error.";
         }
-
-        return retString;
     }
 
-    private String disconnectSled() {
-        mContext = this.getContext();
-        mReader = Reader.getReader(mContext, mConnectivityHandler);
-        String retString = "";
-        int ret = -100;
-        boolean closeResult = false;
-        if (mReader != null) {
-            ret = mReader.SD_Disconnect();
-            closeResult = mReader.SD_Close();
-            retString = closeResult ? "Successfully disconnected." : "Error.";
-        } else {
-            retString += "No connection.";
-        }
-        return retString;
-    }
-
-    private int scan(){
-        mContext = this.getContext();
-        mReader = Reader.getReader(mContext, mInventoryHandler);
-        mReader.RF_PerformInventory(true, false, false);
-        Thread t = new Thread() {
+    private void subscriberHandler() {
+        client.onTagEpcLog = new HandlerTagEpcLog() {
             @Override
-            public void run() {
-                try {
-                    this.sleep(5000);
-                    mReader.RF_StopInventory();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+            public void log(String s, LogBaseEpcInfo logBaseEpcInfo) {
+                // 回调内部如有阻塞，会影响 API 正常使用
+                // 标签回调数量较多，请将标签数据先缓存起来再作业务处理
+                if (logBaseEpcInfo.getResult() == 0) {
+                    Log.e("标签-->", logBaseEpcInfo.getEpc());
+                    inventory.add(logBaseEpcInfo.getEpc());
                 }
             }
         };
-        t.start();
-        // int ret = mReader.RF_PerformInventory(true, false, false);
-//        mReader.RF_StopInventory();
-        return 0;
-    }
-
-    private int stopScan(){
-        mContext = this.getContext();
-        mReader = Reader.getReader(mContext, mInventoryHandler);
-        mReader.RF_StopInventory();
-        return 0;
-    }
-
-    private List<String> fetchList(){
-        return inventory;
-    }
-
-    private void clearList(){
-        inventory.clear();
-    }
-
-    private static class ConnectivityHandler extends Handler {
-        private final WeakReference<MainActivity> mExecutor;
-
-        public ConnectivityHandler(MainActivity f) {
-            mExecutor = new WeakReference<>(f);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            MainActivity executor = mExecutor.get();
-            if (executor != null) {
-                executor.handleMessage(msg);
+        client.onTagEpcOver = new HandlerTagEpcOver() {
+            @Override
+            public void log(String s, LogBaseEpcOver logBaseEpcOver) {
+                Log.e("HandlerTagEpcOver", "HandlerTagEpcOver");
             }
-        }
-    }
-
-    private static class InventoryHandler extends Handler {
-        private final WeakReference<MainActivity> mExecutor;
-
-        public InventoryHandler(MainActivity m) {
-            mExecutor = new WeakReference<>(m);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            MainActivity executor = mExecutor.get();
-            if (executor != null) {
-                executor.handleMessage(msg);
-            }
-        }
-    }
-
-
-    public void handleMessage(Message m) {
-        debugMessage = "id: " + m.what + " arg1: " + m.arg1 + " arg2: " + m.arg2 + " obj " + (String) m.obj;
-        switch (m.what) {
-            case SDConsts.Msg.SDMsg:
-                if (m.arg1 == SDConsts.SDCmdMsg.SLED_WAKEUP) {
-                    int ret = mReader.SD_Connect();
-                }
-                break;
-            case SDConsts.Msg.RFMsg:
-                switch (m.arg1){
-                    case SDConsts.RFCmdMsg.INVENTORY:
-                        debugMessage = "reached2";
-                        if (m.arg2 == SDConsts.RFResult.SUCCESS) {
-                            if (m.obj != null && m.obj instanceof String){
-                                String data  = (String) m.obj;
-                                if (data != null)
-                                    processReadData(data);
-                            }
-                        }
-                }
-                break;
-        }
-    }
-
-    private void processReadData(String data) {
-        StringBuilder tagSb = new StringBuilder();
-        tagSb.setLength(0);
-        String info = "";
-        String originalData = data;
-        debugMessage = data;
-        if (data.contains(";")) {
-            //full tag example(with optional value)
-            //1) RF_PerformInventory => "3000123456783333444455556666;rssi:-54.8"
-            //2) RF_PerformInventoryWithLocating => "3000123456783333444455556666;loc:64"
-            int infoTagPoint = data.indexOf(';');
-            info = data.substring(infoTagPoint, data.length());
-            int infoPoint = info.indexOf(':') + 1;
-            info = info.substring(infoPoint, info.length());
-            data = data.substring(0, infoTagPoint);
-        }
-        String ret = "info:" + info + " data: " + data;
-        if (inventory.size() == 10){
-            inventory.remove(0);
-        }
-        if (inventory.contains(data))
-            return;
-        inventory.add(data);
+        };
     }
 }

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\NLP\Documents\Tagteka\projects\tagteka-mobile\tagteka-mobile\build\windows\CMakeFiles\8df80f8b2864f145acdd5c44e922cc66\flutter_windows.dll.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\NLP\Documents\Tagteka\projects\tagteka-mobile\tagteka-mobile\build\windows\CMakeFiles\13af618f19a3a12b33ec0425b47a778f\flutter_assemble.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\NLP\Documents\Tagteka\projects\tagteka-mobile\tagteka-mobile\windows\flutter\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\NLP\Documents\Tagteka\projects\tagteka-mobile\tagteka-mobile\build\windows\flutter\CMakeFiles\flutter_assemble" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{EFB1F691-7B1C-3316-894A-142DD92F07F6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

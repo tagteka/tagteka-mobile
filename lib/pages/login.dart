@@ -32,7 +32,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appColor,
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(child: _buildBody()),
     );
   }
@@ -44,7 +44,9 @@ class _LoginState extends State<Login> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          logoText(),
+          Image(
+              image: NetworkImage(
+                  'https://tagteka-assets.s3.us-east-2.amazonaws.com/TAGTEKA_Logo_V1.png')),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -78,19 +80,19 @@ class _LoginState extends State<Login> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => const Home()));
                   },
-                  child: Text('Get Started'),
+                  child: Text('Login'),
                 ),
                 SizedBox(height: 16),
-                MyTextButton(
-                  width: double.infinity,
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Register()));
-                  },
-                  text: "Create an Account",
-                ),
+                // MyTextButton(
+                //   width: double.infinity,
+                //   onPressed: () {
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) => const Register()));
+                //   },
+                //   text: "Create an Account",
+                // ),
               ],
             ),
           ),
